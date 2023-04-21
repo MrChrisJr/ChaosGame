@@ -3,6 +3,7 @@
 #include <SFML/Audio.hpp>
 #include <iostream>
 #include <sstream>
+#include <cmath>
 //test
 // Make code easier to type with "using namespace"
 
@@ -130,6 +131,16 @@ int main() {
 			if (sideCount == 3) isTriangle = true;
 			needingCorners = false;
 		}
+		else
+		{
+			randCorner = rand() % sideCount;
+			Vector2f tempPoint;
+			tempPoint.x = pointHistory.at(pointHistory.size() - 1).x + corners[randCorner].x;
+			tempPoint.y = pointHistory.at(pointHistory.size() - 1).y + corners[randCorner].y;
+			pointHistory.push_back(tempPoint);
+			pointHistory.at(pointHistory.size() - 1).x /= 2;
+			pointHistory.at(pointHistory.size() - 1).y /= 2;
+		}
 		/*****************************************
 		Update the scene
 		*****************************************/
@@ -159,13 +170,7 @@ int main() {
 		if (Keyboard::isKeyPressed(Keyboard::Escape)) {
 			window.close();
 		}
-		randCorner = rand() % sideCount;
-		Vector2f tempPoint;
-		tempPoint.x = pointHistory.at(pointHistory.size() - 1).x + corners[randCorner].x;
-		tempPoint.y = pointHistory.at(pointHistory.size() - 1).y + corners[randCorner].y;
-		pointHistory.push_back(tempPoint);
-		pointHistory.at(pointHistory.size() - 1).x /= 2;
-		pointHistory.at(pointHistory.size() - 1).y /= 2;
+		
 		RectangleShape shape{ Vector2f{ 4,4 } };
 		shape.setFillColor(Color::Cyan);
 		if (isTriangle) {
@@ -176,6 +181,7 @@ int main() {
 				// Can safely assume corners will have up to (and only 3) points due to it being a triangle
 			}
 			if (isInside) {
+				randCorner = rand() % sideCount; //second call
 				//Case: Triangle and the current location is inside the triangle / Can't put before other if statement, the first instance that the point moves into the triangle is excluded from this
 				//The corner that the point moved toward should become more of that one color (1/2 of the remaining 255 positive value)
 				if (RGBStoring[randCorner] == 0) {
